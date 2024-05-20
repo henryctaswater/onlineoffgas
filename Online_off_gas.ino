@@ -40,7 +40,7 @@ S
 
 //Pin definitions definitions
 #define MAF A0            // Mass airflow sensor analugue front end output 
-#define 3way D12          // Digital output the the relay contorillin the 3 way valve
+#define ThreeWay D12          // Digital output the the relay contorillin the 3 way valve
 #define ChipSelect D7     // connect the the SDCS pin on the SD card reader
 
 //Loop timers-----------------------------------------------------
