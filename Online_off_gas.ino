@@ -56,6 +56,13 @@ int year = 2024;
 
 //Definitions-----------------------------------------------------------------------------------------------------
 
+//MAF definitions
+#define RANGE              150    //Measurement Range
+#define ZEROVOLTAGE        0.25   //Zero Voltage 
+#define FULLRANGEVOLTAGE   2.25   //Full scale voltage
+#define VREF               3      //Reference voltage
+float MAFValuee          = 0;
+
 //CO2, temp, hum, pressure definitions
 DFRobot_SCD4X SCD4X(&Wire, /*i2cAddr = */SCD4X_I2C_ADDR);
 
@@ -74,8 +81,8 @@ DFRobot_OxygenSensor oxygen;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 //Pin definitions definitions
-const int MAF A0;            // Mass airflow sensor analugue front end output 
-const int ThreeWay D12;      // Digital output the the relay contorillin the 3 way valve
+const int MAFPin A0;            // Mass airflow sensor analugue front end output 
+const int ThreeWayPin D12;      // Digital output the the relay contorillin the 3 way valve
 const int ChipSelect D7;     // connect the the SDCS pin on the SD card reader
 
 //Loop timers------------------------------------------------------------
@@ -125,16 +132,19 @@ void RTCtime () {
   }
 }
 
+//a function to enable the easy reading off all sensors, the function ruturns a string of all sensor readings to the loop function
 void SensorRead(dataString)
       RTCcurrentTime = rtc.stringTimeStamp();
       dataString += RTCcurrentTime;
 
+      //Read O2 data
       float oxygenData = oxygen.getOxygenData(COLLECT_NUMBER);
         dataString += String(oxygenData);
         dataString += "%,";
         
       Serial.print(dataString);
       
+      //Read CO2 data
       if(SCD4X.getDataReadyStatus()) {
 
           DFRobot_SCD4X::sSensorMeasurement_t data;
@@ -155,12 +165,21 @@ void SensorRead(dataString)
           //Serial.print("Environment pressure : ");
           dataString += String(data.pressure);
           dataString +=(" Pa, ");
+        
+        Serial.print(dataString);
+
+      //Read MAF
+          MAFValue = analogRead(MAFPin)*VREF;
+          MAFValue = MAFValue / 1024;
+          MAFValue = RANGE*(MAFValue - ZEROVOLTAGE)/(FULLRANGEVOLTAGE - ZEROVOLTAGE);
+          dataString += string(MAFValue);
+          dataString +=(" SLM, ");
           
         Serial.print(dataString);  
 
         return dataString
         
-
+//A function to append the data string to the log file , called from the main loop function.
 void DataLog(dataString){
 
   // open the file. note that only one file can be open at a time,
