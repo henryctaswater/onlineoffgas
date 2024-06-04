@@ -449,6 +449,7 @@ void setup()
   Serial.print("Set the current environment altitude : ");
   Serial.print(altitude);
   Serial.println(" m");
+  //neeed to reverse engineer the library to convert altitude to pressure
   
   SCD4X.enablePeriodMeasure(SCD4X_START_PERIODIC_MEASURE);
   Serial.println();
@@ -524,7 +525,24 @@ void loop()
   }
 
 
-  //need to add a callibration for the O2 sensor
-  //should have a void SensorRead() function for reading all sensors so the same fucntion can be used to update the display as to update the datalogger
+
+/*To be added ----------------------------------------------------------------------------------------------*/
+
+
+  //need to add a callibration for the O2 sensor and other sensors (check against atmospheric)
+  //add in OLED functions for readout of values
+  //postentially add in external atmostpheric sensor code to calculate the transfer efficiency on the fly
+  //add in using built in RGB LED to display any errors with startup or with opperation 
+  //time stamp the datalog
+  //add a new file every day, and a running total file, maybe add a reconstrunction if the running total log gets corupted. daily files would rotect the data if the USB is ripped out when being written to
+  //add the code to do the 3 way valve 
+  //add a feild in the CSV with out of call or bad call data
+  //double check the MAF calibration
+  
+  
+  //generally make sure there is error catching, 
+
+
+
 
 }
